@@ -52,7 +52,13 @@ export default function GifsPage() {
 
   return (
     <AuthenticatedLayout>
-      <GifForm onAddGif={handleAddGif} categories={categories} />
+      {userRole === "user" && (
+        <GifForm
+          onAddGif={handleAddGif}
+          categories={categories}
+          userRole={userRole}
+        />
+      )}
       <GifList gifs={gifs} userRole={userRole} onDeleteGif={handleDeleteGif} />
     </AuthenticatedLayout>
   );
