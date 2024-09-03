@@ -22,7 +22,7 @@ export default function MessagesPage() {
   }
   return (
     <AuthenticatedLayout>
-      <Messages />
+      <Messages userRole={userRole}/>
     </AuthenticatedLayout>
   );
 }
