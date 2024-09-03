@@ -102,6 +102,14 @@ export default function Messages() {
   };
 
   return (
+     <div className="relative">
+      {userRole != "admin" && (
+        <div className="absolute inset-0 bg-black bg-opacity-20 backdrop-blur-[2px] rounded-lg flex items-center justify-center z-10">
+          <div className="bg-yellow-500 text-black font-bold py-2 px-4 rounded-full transform -rotate-12">
+            Coming Soon
+          </div>
+        </div>
+      )}
     <div className="bg-[#292929] p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4 text-gray-100">
         {editingId ? "Edit Message" : "Create New Message"}
@@ -205,6 +213,7 @@ export default function Messages() {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 }
