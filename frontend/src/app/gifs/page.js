@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import GifForm from "../../components/GifForm";
-import GifList from "../../components/GifList";
+import GifForm from "@/components/GifForm";
+import GifList from "@/components/GifList";
 import AuthenticatedLayout from "@/components/AuthenticatedLayout";
 
 export default function GifsPage() {
