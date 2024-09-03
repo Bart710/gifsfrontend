@@ -52,7 +52,7 @@ export default function GifsPage() {
 
   return (
     <AuthenticatedLayout>
-      {userRole === "user" && (
+     {(userRole === "user" || userRole === "admin") && (        
         <GifForm
           onAddGif={handleAddGif}
           categories={categories}
