@@ -3,7 +3,7 @@ import { SketchPicker } from "react-color";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export default function Messages() {
+export default function Messages(userRole) {
   const [message, setMessage] = useState("");
   const [label, setLabel] = useState("");
   const [messages, setMessages] = useState([]);
