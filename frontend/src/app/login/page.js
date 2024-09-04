@@ -5,6 +5,7 @@ import Image from "next/image";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function Login() {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function Login() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (!response.ok) {
@@ -27,11 +28,11 @@ export default function Login() {
       }
 
       const data = await response.json();
-      // We're only storing the role now, not a token
-      sessionStorage.setItem("userRole", data.role);
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("userRole", data.role);
       router.push("/gifs");
     } catch (error) {
-      setError(error.message || "Invalid password. Please try again.");
+      setError(error.message || "Invalid credentials. Please try again.");
     }
   };
 
@@ -58,6 +59,14 @@ export default function Login() {
         <h1 className="text-2xl font-bold text-gray-100 mb-6 text-center">
           GIF Manager
         </h1>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Enter username"
+          className="w-full px-3 py-2 bg-[#363636] border border-[#1c1c1c] rounded-md text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent mb-4"
+          required
+        />
         <input
           type="password"
           value={password}
