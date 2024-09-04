@@ -10,6 +10,8 @@ export default function Messages(userRole) {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#000000");
   const [editingId, setEditingId] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [messageToDelete, setMessageToDelete] = useState(null);
 
   useEffect(() => {
     fetchMessages();
@@ -98,18 +100,35 @@ export default function Messages(userRole) {
       .replace(
         /\[color=(.*?)\](.*?)\[\/color\]/g,
         '<span style="color:$1">$2</span>'
-      );
+      )
+      .replace(/\n/g, "<br />");
+  };
+
+  const openDeleteModal = (msg) => {
+    setMessageToDelete(msg);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setMessageToDelete(null);
+  };
+
+  const handleDelete = async () => {
+    if (messageToDelete) {
+      try {
+        await fetch(`${API_BASE_URL}/messages/${messageToDelete._id}`, {
+          method: "DELETE",
+        });
+        fetchMessages();
+        closeDeleteModal();
+      } catch (error) {
+        console.error("Error deleting message:", error);
+      }
+    }
   };
 
   return (
-     <div className="relative">
-      {userRole != "admin" && (
-        <div className="absolute inset-0 bg-black bg-opacity-20 backdrop-blur-[2px] rounded-lg flex items-center justify-center z-10">
-          <div className="bg-yellow-500 text-black font-bold py-2 px-4 rounded-full transform -rotate-12">
-            Coming Soon
-          </div>
-        </div>
-      )}
     <div className="bg-[#292929] p-6 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4 text-gray-100">
         {editingId ? "Edit Message" : "Create New Message"}
@@ -192,28 +211,68 @@ export default function Messages(userRole) {
         </button>
       </form>
 
-      <div className="bg-[#363636] p-4 rounded-lg mt-4">
-        <h3 className="text-xl font-semibold mb-2 text-gray-200">Messages:</h3>
-        {messages.map((msg) => (
-          <div
-            key={msg._id}
-            className="mb-4 p-2 border border-gray-700 rounded"
-          >
-            <h4 className="font-bold text-gray-200">{msg.label}</h4>
-            <p
-              className="text-gray-300"
-              dangerouslySetInnerHTML={{ __html: renderBBCode(msg.content) }}
-            />
-            <button
-              onClick={() => handleEdit(msg)}
-              className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded"
+      <div className="bg-[#363636] p-6 rounded-lg mt-8">
+        <h3 className="text-2xl font-semibold mb-6 text-yellow-500 border-b border-yellow-500 pb-2">
+          Messages
+        </h3>
+        <div className="space-y-6">
+          {messages.map((msg) => (
+            <div
+              key={msg._id}
+              className="bg-[#2a2a2a] p-4 rounded-lg shadow-md transition duration-300 ease-in-out hover:shadow-lg"
             >
-              Edit
-            </button>
-          </div>
-        ))}
+              <div className="flex justify-between items-start mb-2">
+                <h4 className="font-bold text-lg text-gray-200">{msg.label}</h4>
+                <div>
+                  <button
+                    onClick={() => handleEdit(msg)}
+                    className="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-1 px-3 rounded-full text-sm transition duration-300 ease-in-out transform hover:scale-105 mr-2"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => openDeleteModal(msg)}
+                    className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-full text-sm transition duration-300 ease-in-out transform hover:scale-105"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+              <div
+                className="text-gray-300 mt-2 whitespace-pre-wrap"
+                dangerouslySetInnerHTML={{ __html: renderBBCode(msg.content) }}
+              />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-[#292929] p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4 text-gray-100">
+              Confirm Delete Message
+            </h2>
+            <p className="text-gray-300 mb-4">
+              Are you sure you want to delete this message? This action cannot
+              be undone.
+            </p>
+            <div className="flex justify-end">
+              <button
+                onClick={closeDeleteModal}
+                className="mr-2 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-150 ease-in-out"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
