@@ -68,7 +68,7 @@ export default function Users() {
       if (!response.ok) throw new Error("Failed to create user");
       await fetchUsers();
       setCredentials(`credentials:
-website: http://localhost:3000/login
+website: https://gifsfrontend.vercel.app/login
 username: ${userToCreate.username}
 password: ${generatedPassword}`);
       setNewUser({ username: "", password: "", role: "user" });
