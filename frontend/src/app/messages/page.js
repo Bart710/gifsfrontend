@@ -9,7 +9,7 @@ export default function MessagesPage() {
   const router = useRouter();
 
   useEffect(() => {
-    const role = sessionStorage.getItem("userRole");
+    const role = localStorage.getItem("userRole");
     if (role !== "admin") {
       router.push("/gifs");
     } else {
@@ -22,7 +22,7 @@ export default function MessagesPage() {
   }
   return (
     <AuthenticatedLayout>
-      <Messages userRole={userRole}/>
+      <Messages userRole={userRole} />
     </AuthenticatedLayout>
   );
 }
