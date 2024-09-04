@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import GifForm from "@/components/GifForm";
-import GifList from "@/components/GifList";
+import GifForm from "../../components/GifForm";
+import GifList from "../../components/GifList";
 import AuthenticatedLayout from "@/components/AuthenticatedLayout";
 
 export default function GifsPage() {
@@ -12,7 +12,7 @@ export default function GifsPage() {
 
   useEffect(() => {
     fetchGifs();
-    const role = sessionStorage.getItem("userRole");
+    const role = localStorage.getItem("userRole");
     setUserRole(role);
   }, []);
 
@@ -52,7 +52,7 @@ export default function GifsPage() {
 
   return (
     <AuthenticatedLayout>
-     {(userRole === "user" || userRole === "admin") && (        
+      {(userRole === "user" || userRole === "admin") && (
         <GifForm
           onAddGif={handleAddGif}
           categories={categories}
